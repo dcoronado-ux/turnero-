@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Turnos - Renovación Montufareña</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* Estilos Base y Variables */
+    :root {
+      --primary-color: #0d47a1; /* Azul institucional */
+      --secondary-color: #1976d2; /* Azul claro */
+      --success-color: #2e7d32; /* Verde éxito */
+      --success-hover: #1b5e20;
+      --background-color: #f5f7fa;
+      --surface-color: #ffffff;
+      --text-main: #333333;
+      --text-muted: #666666;
+      --border-radius: 12px;
+      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header y Navegación */
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-logo img {
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .header-logo h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .user-info {
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+    }
+
+    nav {
+      background-color: var(--surface-color);
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #e3f2fd;
+      color: var(--primary-color);
+    }
+
+    .nav-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    /* Contenedor Principal */
+    main {
+      flex: 1;
+      padding: 2rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .view {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tarjetas y Formularios */
+    .card {
+      background-color: var(--surface-color);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      margin-bottom: 1.5rem;
+      color: var(--primary-color);
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+    }
+
+    .btn-large {
+      display: block;
+      width: 100%;
+      padding: 1.25rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: white;
+      background-color: var(--success-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2);
+    }
+
+    .btn-large:hover {
+      background-color: var(--success-hover);
+    }
+
+    .btn-large:active {
+      transform: translateY(2px);
+    }
+
+    .btn-large:disabled {
+      background-color: #a5d6a7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .turn-display {
+      text-align: center;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background-color: #e8f5e9;
+      border-radius: var(--border-radius);
+      border: 2px dashed var(--success-color);
+    }
+
+    .turn-display span {
+      display: block;
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--success-color);
+    }
+
+    /* Lista de Pacientes (Doctores) */
+    .patient-list {
+      list-style: none;
+    }
+
+    .patient-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      background-color: var(--surface-color);
+      transition: box-shadow 0.2s;
+    }
+
+    .patient-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .patient-item.en-consulta {
+      border-left: 5px solid var(--primary-color);
+      background-color: #e3f2fd;
+    }
+
+    .patient-info {
+      flex: 1;
+    }
+
+    .patient-info strong {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      display: block;
+    }
+
+    .patient-info span {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .patient-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      transition: opacity 0.2s;
+    }
+
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+
+    .btn-call { background-color: var(--primary-color); }
+    .btn-done { background-color: var(--success-color); }
+
+    .next-patient {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .next-patient h3 { margin-bottom: 0.5rem; }
+    .next-patient .big-number { font-size: 2.5rem; font-weight: bold; }
+
+    /* Modal / Overlay */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: white;
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    /* Notificaciones */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background-color: var(--text-main);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards;
+      opacity: 0;
+    }
+
+    .toast.success { background-color: var(--success-color); }
+    .toast.error { background-color: #d32f2f; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    /* Responsividad */
+    @media (max-width: 600px) {
+      header { flex-direction: column; gap: 10px; text-align: center; padding: 1rem; }
+      .header-logo h1 { font-size: 1.25rem; }
+      nav { flex-wrap: wrap; }
+      .nav-btn { flex: 1; min-width: 120px; text-align: center; }
+      .patient-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .patient-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Modal Inicial de Identificación -->
+  <div id="overlay">
+    <div class="modal">
+      <h2 style="margin-bottom: 1rem; color: var(--primary-color);">Bienvenido al Sistema</h2>
+      <div class="form-group">
+        <label for="userNameInput">Por favor, ingresa tu nombre:</label>
+        <input type="text" id="userNameInput" placeholder="Ej: Recepción 1, María..." autocomplete="off">
+      </div>
+      <button class="btn-large" onclick="app.login()" style="background-color: var(--primary-color);">Ingresar</button>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-logo">
+      <img src="https://res.cloudinary.com/dtmqftcsr/image/upload/v1777329849/LOGO_RENOVACIO%CC%81N_MONTUFAREN%CC%83A_fegxxf.png" alt="Logo">
+      <h1>Sistema de Turnos</h1>
+    </div>
+    <div class="user-info" id="userInfoDisplay" style="display: none;">
+      Usuario: <strong id="displayUserName"></strong>
+    </div>
+  </header>
+
+  <nav id="mainNav" style="display: none;">
+    <button class="nav-btn active" onclick="app.switchView('darTurno')">Dar Turno</button>
+    <button class="nav-btn" onclick="app.switchView('misPacientes')">Mis Pacientes</button>
+  </nav>
+
+  <main>
+    <!-- Vista: Dar Turno -->
+    <div id="view-darTurno" class="view active">
+      <div class="card">
+        <h2>Asignar Nuevo Turno</h2>
+        
+        <div class="form-group">
+          <label for="doctorSelectTurno">Seleccionar Doctor:</label>
+          <select id="doctorSelectTurno" onchange="app.onDoctorSelectTurno()">
+            <option value="">-- Elige un doctor --</option>
+            <!-- Llenado dinámicamente -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="pacienteNameInput">Nombre del Paciente (Opcional):</label>
+          <input type="text" id="pacienteNameInput" placeholder="Nombre completo">
+        </div>
+
+        <div id="turnPreview" class="turn-display" style="display: none;">
+          Siguiente Turno:
+          <span id="nextTurnNumber">#--</span>
+        </div>
+
+        <button id="btnDarTurno" class="btn-large" onclick="app.darTurno()" disabled>Dar Turno</button>
+      </div>
+    </div>
+
+    <!-- Vista: Mis Pacientes (Doctores) -->
+    <div id="view-misPacientes" class="view">
+      <div class="card">
+        <h2>Panel del Doctor</h2>
+        <div class="form-group">
+          <label for="doctorSelectPanel">¿Qué doctor eres?</label>
+          <select id="doctorSelectPanel" onchange="app.onDoctorSelectPanel()">
+            <option value="">-- Selecciona tu perfil --</option>
+            <!-- Llenado dinámicamente -->
+          </select>
+        </div>
+      </div>
+
+      <div id="doctorPanelContent" style="display: none;">
+        <div class="next-patient">
+          <h3>Próximo Paciente</h3>
+          <div class="big-number" id="currentPatientNumber">--</div>
+          <div id="currentPatientName">Esperando pacientes...</div>
+        </div>
+
+        <div class="card">
+          <h2>Lista de Espera</h2>
+          <ul class="patient-list" id="patientList">
+            <!-- Llenado dinámicamente -->
+            <li class="patient-item">Cargando...</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // Configuración de Supabase
+    const SUPABASE_URL = 'https://tmucjycefiyhthgoladq.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_GRERFbwae5xPLjMPG55zXA_Z2GWb3qB';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Estado de la aplicación
+    const app = {
+      userName: null,
+      doctores: [],
+      contadores: {}, // Map: doctor_id -> ultimo_turno
+      turnosPendientes: [], // Cache de turnos para el doctor seleccionado
+      selectedDoctorIdPanel: null,
+
+      async init() {
+        // Precargar doctores
+        const { data, error } = await supabase.from('doctores').select('*').order('nombre');
+        if (error) {
+          this.showToast('Error cargando doctores: ' + error.message, 'error');
+          return;
+        }
+        this.doctores = data;
+        this.renderDoctorSelects();
+
+        // Cargar contadores iniciales
+        await this.loadContadores();
+
+        // Suscribirse a cambios en Realtime
+        this.setupRealtimeSubscriptions();
+      },
+
+      login() {
+        const input = document.getElementById('userNameInput').value.trim();
+        if (!input) {
+          this.showToast('Debes ingresar un nombre', 'error');
+          return;
+        }
+        this.userName = input;
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('displayUserName').innerText = this.userName;
+        document.getElementById('userInfoDisplay').style.display = 'block';
+        document.getElementById('mainNav').style.display = 'flex';
+        
+        this.init(); // Inicializar después de loguearse
+      },
+
+      switchView(viewName) {
+        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(`view-${viewName}`).classList.add('active');
+        event.target.classList.add('active');
+
+        // Resetear campos si se vuelve a Dar Turno
+        if (viewName === 'darTurno') {
+          document.getElementById('pacienteNameInput').value = '';
+          this.onDoctorSelectTurno();
+        }
+      },
+
+      renderDoctorSelects() {
+        const selects = ['doctorSelectTurno', 'doctorSelectPanel'];
+        selects.forEach(id => {
+          const select = document.getElementById(id);
+          select.innerHTML = '<option value="">-- Seleccionar --</option>';
+          this.doctores.forEach(doc => {
+            select.innerHTML += `<option value="${doc.id}">${doc.nombre} (${doc.especialidad})</option>`;
+          });
+        });
+      },
+
+      async loadContadores() {
+        const { data, error } = await supabase.from('contadores').select('*');
+        if (!error && data) {
+          data.forEach(c => {
+            this.contadores[c.doctor_id] = c.ultimo_turno;
+          });
+        }
+      },
+
+      // VISTA: DAR TURNO
+      onDoctorSelectTurno() {
+        const doctorId = document.getElementById('doctorSelectTurno').value;
+        const btn = document.getElementById('btnDarTurno');
+        const preview = document.getElementById('turnPreview');
+        const nextNumEl = document.getElementById('nextTurnNumber');
+
+        if (!doctorId) {
+          btn.disabled = true;
+          preview.style.display = 'none';
+          return;
+        }
+
+        const ultimoTurno = this.contadores[doctorId] || 0;
+        const nextTurno = ultimoTurno + 1;
+        
+        nextNumEl.innerText = `#${nextTurno}`;
+        preview.style.display = 'block';
+        btn.disabled = false;
+      },
+
+      async darTurno() {
+        const doctorId = document.getElementById('doctorSelectTurno').value;
+        const pacienteName = document.getElementById('pacienteNameInput').value.trim();
+        const btn = document.getElementById('btnDarTurno');
+        
+        if (!doctorId) return;
+        btn.disabled = true;
+        btn.innerText = 'Procesando...';
+
+        try {
+          // Obtener el contador actual de la DB para evitar desincronizaciones
+          const { data: countData, error: countErr } = await supabase
+            .from('contadores')
+            .select('ultimo_turno')
+            .eq('doctor_id', doctorId)
+            .single();
+            
+          if (countErr) throw countErr;
+
+          const nuevoTurnoNum = countData.ultimo_turno + 1;
+
+          // Actualizar contador primero
+          const { error: updateErr } = await supabase
+            .from('contadores')
+            .update({ ultimo_turno: nuevoTurnoNum })
+            .eq('doctor_id', doctorId);
+            
+          if (updateErr) throw updateErr;
+
+          // Insertar el nuevo turno
+          const { error: insertErr } = await supabase
+            .from('turnos')
+            .insert({
+              doctor_id: doctorId,
+              numero_turno: nuevoTurnoNum,
+              paciente: pacienteName || 'Sin Nombre',
+              estado: 'pendiente',
+              creado_por: this.userName
+            });
+
+          if (insertErr) throw insertErr;
+
+          this.showToast(`¡Turno #${nuevoTurnoNum} asignado exitosamente!`, 'success');
+          document.getElementById('pacienteNameInput').value = '';
+          
+        } catch (error) {
+          console.error(error);
+          this.showToast('Error al asignar turno. Intenta de nuevo.', 'error');
+        } finally {
+          btn.innerText = 'Dar Turno';
+          // El refresco de la UI se maneja por la suscripción Realtime
+        }
+      },
+
+      // VISTA: PANEL DEL DOCTOR
+      async onDoctorSelectPanel() {
+        const doctorId = document.getElementById('doctorSelectPanel').value;
+        const content = document.getElementById('doctorPanelContent');
+        
+        this.selectedDoctorIdPanel = doctorId;
+
+        if (!doctorId) {
+          content.style.display = 'none';
+          return;
+        }
+
+        content.style.display = 'block';
+        await this.loadTurnosPendientes(doctorId);
+      },
+
+      async loadTurnosPendientes(doctorId) {
+        const listEl = document.getElementById('patientList');
+        listEl.innerHTML = '<li class="patient-item">Cargando...</li>';
+
+        const { data, error } = await supabase
+          .from('turnos')
+          .select('*')
+          .eq('doctor_id', doctorId)
+          .in('estado', ['pendiente', 'en_consulta'])
+          .order('numero_turno', { ascending: true });
+
+        if (error) {
+          this.showToast('Error cargando pacientes', 'error');
+          return;
+        }
+
+        this.turnosPendientes = data;
+        this.renderPatientList();
+      },
+
+      renderPatientList() {
+        const listEl = document.getElementById('patientList');
+        const nextNumEl = document.getElementById('currentPatientNumber');
+        const nextNameEl = document.getElementById('currentPatientName');
+        
+        listEl.innerHTML = '';
+
+        if (this.turnosPendientes.length === 0) {
+          listEl.innerHTML = '<li class="patient-item" style="justify-content:center; color:#666;">No hay pacientes en espera</li>';
+          nextNumEl.innerText = '--';
+          nextNameEl.innerText = 'Libre';
+          return;
+        }
+
+        // Buscar el que está en consulta primero, si no hay, tomar el primer pendiente
+        const enConsulta = this.turnosPendientes.find(t => t.estado === 'en_consulta');
+        const proximo = enConsulta || this.turnosPendientes[0];
+
+        nextNumEl.innerText = `Turno #${proximo.numero_turno}`;
+        nextNameEl.innerText = proximo.paciente || 'Sin nombre';
+        
+        if(enConsulta) {
+           nextNameEl.innerHTML += ` <span style="font-size:0.8rem; background:white; color:var(--primary-color); padding:2px 6px; border-radius:10px; margin-left:10px;">EN CONSULTA</span>`;
+        }
+
+        this.turnosPendientes.forEach(turno => {
+          const isEnConsulta = turno.estado === 'en_consulta';
+          
+          let actionButtons = '';
+          if (turno.estado === 'pendiente') {
+            actionButtons = `<button class="btn-action btn-call" onclick="app.updateTurnoEstado('${turno.id}', 'en_consulta')">Llamar</button>`;
+          } else if (turno.estado === 'en_consulta') {
+            actionButtons = `<button class="btn-action btn-done" onclick="app.updateTurnoEstado('${turno.id}', 'atendido')">Atender / Finalizar</button>`;
+          }
+
+          listEl.innerHTML += `
+            <li class="patient-item ${isEnConsulta ? 'en-consulta' : ''}">
+              <div class="patient-info">
+                <strong>Turno #${turno.numero_turno}</strong>
+                <span>Paciente: ${turno.paciente || 'N/A'} | Creado por: ${turno.creado_por}</span>
+              </div>
+              <div class="patient-actions">
+                ${actionButtons}
+              </div>
+            </li>
+          `;
+        });
+      },
+
+      async updateTurnoEstado(turnoId, nuevoEstado) {
+        try {
+          const { error } = await supabase
+            .from('turnos')
+            .update({ estado: nuevoEstado })
+            .eq('id', turnoId);
+
+          if (error) throw error;
+          
+          // Nota: No recargamos aquí manualmente, Realtime lo hará
+          if (nuevoEstado === 'en_consulta') this.showToast('Paciente llamado', 'success');
+          if (nuevoEstado === 'atendido') this.showToast('Turno finalizado', 'success');
+
+        } catch (error) {
+          console.error(error);
+          this.showToast('Error al actualizar estado', 'error');
+        }
+      },
+
+      // TIEMPO REAL
+      setupRealtimeSubscriptions() {
+        const channel = supabase.channel('schema-db-changes')
+          // Escuchar cambios en la tabla turnos
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'turnos' }, payload => {
+            console.log('Cambio en turnos:', payload);
+            // Si soy un doctor y el cambio es de mi área, recargo la lista
+            if (this.selectedDoctorIdPanel) {
+              const record = payload.new || payload.old;
+              if (record && record.doctor_id === this.selectedDoctorIdPanel) {
+                this.loadTurnosPendientes(this.selectedDoctorIdPanel);
+              }
+            }
+          })
+          // Escuchar cambios en la tabla contadores
+          .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'contadores' }, payload => {
+            console.log('Cambio en contadores:', payload);
+            if (payload.new) {
+              const { doctor_id, ultimo_turno } = payload.new;
+              this.contadores[doctor_id] = ultimo_turno;
+              
+              // Actualizar UI si estoy en la vista de Dar Turno y tengo ese doctor seleccionado
+              const selectTurno = document.getElementById('doctorSelectTurno');
+              if (selectTurno && selectTurno.value === doctor_id) {
+                this.onDoctorSelectTurno(); 
+              }
+            }
+          })
+          .subscribe((status) => {
+             console.log("Realtime status:", status);
+          });
+      },
+
+      showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerText = message;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+          if (container.contains(toast)) {
+            container.removeChild(toast);
+          }
+        }, 3000);
+      }
+    };
+
+    // Escuchar Enter en el modal
+    document.getElementById('userNameInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') app.login();
+    });
+
+  </script>
+</body>
+</html>

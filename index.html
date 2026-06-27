@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,16 +9,19 @@
   <style>
     /* Estilos Base y Variables */
     :root {
-      --primary-color: #0d47a1; /* Azul institucional */
-      --secondary-color: #1976d2; /* Azul claro */
-      --success-color: #2e7d32; /* Verde éxito */
+      --primary-color: #0d47a1;
+      /* Azul institucional */
+      --secondary-color: #1976d2;
+      /* Azul claro */
+      --success-color: #2e7d32;
+      /* Verde éxito */
       --success-hover: #1b5e20;
       --background-color: #f5f7fa;
       --surface-color: #ffffff;
       --text-main: #333333;
       --text-muted: #666666;
       --border-radius: 12px;
-      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     * {
@@ -43,7 +47,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -67,47 +71,33 @@
 
     .user-info {
       font-size: 0.9rem;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       padding: 0.5rem 1rem;
       border-radius: 20px;
-    }
-
-    nav {
-      background-color: var(--surface-color);
       display: flex;
-      justify-content: center;
-      gap: 1rem;
-      padding: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      align-items: center;
+      gap: 10px;
     }
 
-    .nav-btn {
-      background: none;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .nav-btn:hover {
-      background-color: #e3f2fd;
-      color: var(--primary-color);
-    }
-
-    .nav-btn.active {
-      background-color: var(--primary-color);
+    .logout-btn {
+      background: rgba(255, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: white;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 0, 0, 0.4);
     }
 
     /* Contenedor Principal */
     main {
       flex: 1;
       padding: 2rem 1rem;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       width: 100%;
     }
@@ -122,8 +112,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* Tarjetas y Formularios */
@@ -141,8 +138,18 @@
       text-align: center;
     }
 
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
     .form-group {
       margin-bottom: 1.5rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
     }
 
     .form-group label {
@@ -152,9 +159,11 @@
       color: var(--text-main);
     }
 
-    select, input[type="text"] {
+    select,
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
-      padding: 1rem;
+      padding: 0.75rem 1rem;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 8px;
@@ -162,7 +171,8 @@
       transition: border-color 0.2s;
     }
 
-    select:focus, input[type="text"]:focus {
+    select:focus,
+    input:focus {
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
     }
@@ -180,6 +190,7 @@
       cursor: pointer;
       transition: background-color 0.2s, transform 0.1s;
       box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2);
+      margin-top: 1rem;
     }
 
     .btn-large:hover {
@@ -219,9 +230,8 @@
 
     .patient-item {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
+      flex-direction: column;
+      padding: 1.5rem;
       border: 1px solid #e0e0e0;
       border-radius: 8px;
       margin-bottom: 1rem;
@@ -230,7 +240,7 @@
     }
 
     .patient-item:hover {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .patient-item.en-consulta {
@@ -238,28 +248,60 @@
       background-color: #e3f2fd;
     }
 
-    .patient-info {
-      flex: 1;
+    .patient-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 1rem;
     }
 
-    .patient-info strong {
-      font-size: 1.25rem;
+    .patient-title {
+      font-size: 1.5rem;
       color: var(--primary-color);
-      display: block;
+      font-weight: bold;
     }
 
-    .patient-info span {
+    .patient-subtitle {
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      margin-top: 5px;
+    }
+
+    .patient-data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .data-item span:first-child {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .data-item span:last-child {
+      display: block;
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-top: 2px;
     }
 
     .patient-actions {
       display: flex;
       gap: 0.5rem;
+      justify-content: flex-end;
     }
 
     .btn-action {
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 1.5rem;
       border: none;
       border-radius: 6px;
       font-weight: 600;
@@ -272,8 +314,13 @@
       opacity: 0.9;
     }
 
-    .btn-call { background-color: var(--primary-color); }
-    .btn-done { background-color: var(--success-color); }
+    .btn-call {
+      background-color: var(--primary-color);
+    }
+
+    .btn-done {
+      background-color: var(--success-color);
+    }
 
     .next-patient {
       background-color: var(--primary-color);
@@ -283,19 +330,29 @@
       text-align: center;
       margin-bottom: 2rem;
     }
-    
-    .next-patient h3 { margin-bottom: 0.5rem; }
-    .next-patient .big-number { font-size: 2.5rem; font-weight: bold; }
+
+    .next-patient h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .next-patient .big-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
 
     /* Modal / Overlay */
     #overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      backdrop-filter: blur(5px);
     }
 
     .modal {
@@ -304,7 +361,39 @@
       border-radius: var(--border-radius);
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .role-selection {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .role-btn {
+      padding: 15px;
+      font-size: 1.1rem;
+      border: 2px solid var(--primary-color);
+      background: white;
+      color: var(--primary-color);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .role-btn:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .login-step {
+      display: none;
+    }
+
+    .login-step.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
     }
 
     /* Notificaciones */
@@ -323,80 +412,147 @@
       color: white;
       padding: 1rem 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       animation: slideIn 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards;
       opacity: 0;
     }
 
-    .toast.success { background-color: var(--success-color); }
-    .toast.error { background-color: #d32f2f; }
+    .toast.success {
+      background-color: var(--success-color);
+    }
+
+    .toast.error {
+      background-color: #d32f2f;
+    }
 
     @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
+
     @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+      }
     }
 
     /* Responsividad */
     @media (max-width: 600px) {
-      header { flex-direction: column; gap: 10px; text-align: center; padding: 1rem; }
-      .header-logo h1 { font-size: 1.25rem; }
-      nav { flex-wrap: wrap; }
-      .nav-btn { flex: 1; min-width: 120px; text-align: center; }
-      .patient-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
-      .patient-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+      header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .header-logo h1 {
+        font-size: 1.25rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .patient-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .patient-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-content: stretch;
+      }
+
+      .btn-action {
+        text-align: center;
+      }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- Modal Inicial de Identificación -->
+  <!-- Modal Inicial de Identificación (Roles) -->
   <div id="overlay">
     <div class="modal">
-      <h2 style="margin-bottom: 1rem; color: var(--primary-color);">Bienvenido al Sistema</h2>
-      <div class="form-group">
-        <label for="userNameInput">Por favor, ingresa tu nombre:</label>
-        <input type="text" id="userNameInput" placeholder="Ej: Recepción 1, María..." autocomplete="off">
+      <h2 style="margin-bottom: 1.5rem; color: var(--primary-color); text-align: center;">Bienvenido</h2>
+
+      <!-- Paso 1: Seleccionar Rol -->
+      <div id="step-role" class="login-step active">
+        <p style="text-align: center; margin-bottom: 1rem;">Selecciona tu perfil para ingresar:</p>
+        <div class="role-selection">
+          <button class="role-btn" onclick="app.selectRole('doctor')">👨‍⚕️ Soy Profesional Médico</button>
+          <button class="role-btn" onclick="app.selectRole('turnero')">📝 Soy Recepción / Turnero</button>
+        </div>
       </div>
-      <button class="btn-large" onclick="app.login()" style="background-color: var(--primary-color);">Ingresar</button>
+
+      <!-- Paso 2: Turnero Login -->
+      <div id="step-turnero" class="login-step">
+        <div class="form-group">
+          <label for="userNameInput">Nombre del Turnero/Recepción:</label>
+          <input type="text" id="userNameInput" placeholder="Ej: Recepción 1, María..." autocomplete="off">
+        </div>
+        <button class="btn-large" onclick="app.loginTurnero()"
+          style="background-color: var(--primary-color);">Ingresar</button>
+        <button onclick="app.backToRoles()"
+          style="background: none; border: none; color: var(--text-muted); width: 100%; margin-top: 1rem; cursor: pointer; text-decoration: underline;">Volver</button>
+      </div>
+
+      <!-- Paso 2: Doctor Login -->
+      <div id="step-doctor" class="login-step">
+        <div class="form-group">
+          <label for="doctorLoginSelect">Selecciona tu nombre:</label>
+          <select id="doctorLoginSelect">
+            <option value="">Cargando profesionales...</option>
+          </select>
+        </div>
+        <button class="btn-large" onclick="app.loginDoctor()" style="background-color: var(--primary-color);">Ingresar a
+          mi Panel</button>
+        <button onclick="app.backToRoles()"
+          style="background: none; border: none; color: var(--text-muted); width: 100%; margin-top: 1rem; cursor: pointer; text-decoration: underline;">Volver</button>
+      </div>
     </div>
   </div>
 
   <header>
     <div class="header-logo">
-      <img src="https://res.cloudinary.com/dtmqftcsr/image/upload/v1777329849/LOGO_RENOVACIO%CC%81N_MONTUFAREN%CC%83A_fegxxf.png" alt="Logo">
+      <img
+        src="https://res.cloudinary.com/dtmqftcsr/image/upload/v1777329849/LOGO_RENOVACIO%CC%81N_MONTUFAREN%CC%83A_fegxxf.png"
+        alt="Logo">
       <h1>Sistema de Turnos</h1>
     </div>
     <div class="user-info" id="userInfoDisplay" style="display: none;">
-      Usuario: <strong id="displayUserName"></strong>
+      <span id="roleBadge" style="font-size: 1.2rem;"></span>
+      <strong id="displayUserName"></strong>
+      <button class="logout-btn" onclick="app.logout()">Salir</button>
     </div>
   </header>
 
-  <nav id="mainNav" style="display: none;">
-    <button class="nav-btn active" onclick="app.switchView('darTurno')">Dar Turno</button>
-    <button class="nav-btn" onclick="app.switchView('misPacientes')">Mis Pacientes</button>
-  </nav>
-
   <main>
-    <!-- Vista: Dar Turno -->
-    <div id="view-darTurno" class="view active">
+    <!-- Vista: Dar Turno (Solo para Turneros) -->
+    <div id="view-darTurno" class="view">
       <div class="card">
         <h2>Asignar Nuevo Turno</h2>
-        
-        <div class="form-group">
-          <label for="doctorSelectTurno">Seleccionar Doctor:</label>
+
+        <div class="form-group full-width">
+          <label for="doctorSelectTurno">Asignar a Profesional:</label>
           <select id="doctorSelectTurno" onchange="app.onDoctorSelectTurno()">
             <option value="">-- Elige un doctor --</option>
             <!-- Llenado dinámicamente -->
           </select>
-        </div>
-
-        <div class="form-group">
-          <label for="pacienteNameInput">Nombre del Paciente (Opcional):</label>
-          <input type="text" id="pacienteNameInput" placeholder="Nombre completo">
         </div>
 
         <div id="turnPreview" class="turn-display" style="display: none;">
@@ -404,35 +560,66 @@
           <span id="nextTurnNumber">#--</span>
         </div>
 
-        <button id="btnDarTurno" class="btn-large" onclick="app.darTurno()" disabled>Dar Turno</button>
+        <h3
+          style="margin: 1.5rem 0 1rem; color: var(--primary-color); border-bottom: 2px solid #eee; padding-bottom: 5px;">
+          Datos del Paciente</h3>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="pacienteNameInput">Nombres y Apellidos Completos:</label>
+            <input type="text" id="pacienteNameInput" placeholder="Ej: Juan Pérez">
+          </div>
+
+          <div class="form-group">
+            <label for="pacienteCedula">Número de Cédula:</label>
+            <input type="text" id="pacienteCedula" placeholder="Ej: 17xxxxxxx">
+          </div>
+
+          <div class="form-group">
+            <label for="pacienteEdad">Edad (años):</label>
+            <input type="number" id="pacienteEdad" placeholder="Ej: 35">
+          </div>
+
+          <div class="form-group">
+            <label for="pacientePeso">Peso:</label>
+            <input type="text" id="pacientePeso" placeholder="Ej: 70 kg">
+          </div>
+
+          <div class="form-group">
+            <label for="pacienteEstatura">Estatura:</label>
+            <input type="text" id="pacienteEstatura" placeholder="Ej: 1.75 m">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="pacienteSignos">Signos Vitales Generales:</label>
+            <input type="text" id="pacienteSignos" placeholder="Presión, Frecuencia Cardíaca, Temperatura, etc.">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="pacienteContacto">Celular o Correo Electrónico:</label>
+            <input type="text" id="pacienteContacto" placeholder="Ej: 099xxxxxxx / email@ejemplo.com">
+          </div>
+        </div>
+
+        <button id="btnDarTurno" class="btn-large" onclick="app.darTurno()" disabled>Registrar Paciente y Dar
+          Turno</button>
       </div>
     </div>
 
-    <!-- Vista: Mis Pacientes (Doctores) -->
+    <!-- Vista: Panel del Doctor (Solo para Doctores) -->
     <div id="view-misPacientes" class="view">
-      <div class="card">
-        <h2>Panel del Doctor</h2>
-        <div class="form-group">
-          <label for="doctorSelectPanel">¿Qué doctor eres?</label>
-          <select id="doctorSelectPanel" onchange="app.onDoctorSelectPanel()">
-            <option value="">-- Selecciona tu perfil --</option>
-            <!-- Llenado dinámicamente -->
-          </select>
-        </div>
-      </div>
-
-      <div id="doctorPanelContent" style="display: none;">
+      <div id="doctorPanelContent">
         <div class="next-patient">
-          <h3>Próximo Paciente</h3>
+          <h3>Próximo Paciente a Atender</h3>
           <div class="big-number" id="currentPatientNumber">--</div>
-          <div id="currentPatientName">Esperando pacientes...</div>
+          <div id="currentPatientName" style="font-size: 1.2rem; margin-top: 10px;">Esperando pacientes...</div>
         </div>
 
         <div class="card">
           <h2>Lista de Espera</h2>
           <ul class="patient-list" id="patientList">
             <!-- Llenado dinámicamente -->
-            <li class="patient-item">Cargando...</li>
+            <li class="patient-item" style="text-align: center;">Cargando...</li>
           </ul>
         </div>
       </div>
@@ -449,69 +636,131 @@
 
     // Estado de la aplicación
     const app = {
-      userName: null,
+      role: null, // 'doctor' o 'turnero'
+      userName: null, // Nombre del turnero
+      selectedDoctorIdPanel: null, // ID del doctor si el rol es doctor
       doctores: [],
       contadores: {}, // Map: doctor_id -> ultimo_turno
-      turnosPendientes: [], // Cache de turnos para el doctor seleccionado
-      selectedDoctorIdPanel: null,
+      turnosPendientes: [], // Cache de turnos
 
       async init() {
-        // Precargar doctores
+        // Cargar doctores al iniciar para tenerlos listos en el modal y selects
         const { data, error } = await supabase.from('doctores').select('*').order('nombre');
         if (error) {
-          this.showToast('Error cargando doctores: ' + error.message, 'error');
+          this.showToast('Error conectando con la base de datos', 'error');
+          console.error(error);
           return;
         }
         this.doctores = data;
+
+        // Poblar selects
         this.renderDoctorSelects();
+      },
 
-        // Cargar contadores iniciales
+      // LÓGICA DE LOGIN Y ROLES
+      selectRole(role) {
+        document.querySelectorAll('.login-step').forEach(el => el.classList.remove('active'));
+        if (role === 'turnero') {
+          document.getElementById('step-turnero').classList.add('active');
+          setTimeout(() => document.getElementById('userNameInput').focus(), 100);
+        } else if (role === 'doctor') {
+          document.getElementById('step-doctor').classList.add('active');
+        }
+      },
+
+      backToRoles() {
+        document.querySelectorAll('.login-step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step-role').classList.add('active');
+      },
+
+      async loginTurnero() {
+        const input = document.getElementById('userNameInput').value.trim();
+        if (!input) {
+          this.showToast('Debes ingresar tu nombre', 'error');
+          return;
+        }
+        this.role = 'turnero';
+        this.userName = input;
+
+        this.finalizeLogin('📝 Turnero:', this.userName);
+        this.switchView('darTurno');
+
+        // Cargar contadores y suscribirse a realtime
         await this.loadContadores();
-
-        // Suscribirse a cambios en Realtime
         this.setupRealtimeSubscriptions();
       },
 
-      login() {
-        const input = document.getElementById('userNameInput').value.trim();
-        if (!input) {
-          this.showToast('Debes ingresar un nombre', 'error');
+      async loginDoctor() {
+        const select = document.getElementById('doctorLoginSelect');
+        const doctorId = select.value;
+        const doctorName = select.options[select.selectedIndex].text;
+
+        if (!doctorId) {
+          this.showToast('Selecciona tu nombre de la lista', 'error');
           return;
         }
-        this.userName = input;
+
+        this.role = 'doctor';
+        this.selectedDoctorIdPanel = doctorId;
+        this.userName = doctorName;
+
+        this.finalizeLogin('👨‍⚕️ Dr/a:', this.userName);
+        this.switchView('misPacientes');
+
+        // Cargar pacientes iniciales y suscribirse a realtime
+        await this.loadTurnosPendientes(doctorId);
+        this.setupRealtimeSubscriptions();
+      },
+
+      finalizeLogin(roleText, displayName) {
         document.getElementById('overlay').style.display = 'none';
-        document.getElementById('displayUserName').innerText = this.userName;
-        document.getElementById('userInfoDisplay').style.display = 'block';
-        document.getElementById('mainNav').style.display = 'flex';
-        
-        this.init(); // Inicializar después de loguearse
+        document.getElementById('roleBadge').innerText = roleText;
+        document.getElementById('displayUserName').innerText = displayName;
+        document.getElementById('userInfoDisplay').style.display = 'flex';
+      },
+
+      logout() {
+        this.role = null;
+        this.userName = null;
+        this.selectedDoctorIdPanel = null;
+
+        document.getElementById('overlay').style.display = 'flex';
+        this.backToRoles();
+        document.getElementById('userInfoDisplay').style.display = 'none';
+
+        // Limpiar formularios
+        document.getElementById('userNameInput').value = '';
+        document.getElementById('doctorLoginSelect').value = '';
+        document.getElementById('doctorSelectTurno').value = '';
+
+        // Remover suscripciones realtime si existen (simplificado)
+        supabase.removeAllChannels();
       },
 
       switchView(viewName) {
         document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-        
         document.getElementById(`view-${viewName}`).classList.add('active');
-        event.target.classList.add('active');
 
-        // Resetear campos si se vuelve a Dar Turno
         if (viewName === 'darTurno') {
-          document.getElementById('pacienteNameInput').value = '';
+          this.clearTurnoForm();
           this.onDoctorSelectTurno();
         }
       },
 
       renderDoctorSelects() {
-        const selects = ['doctorSelectTurno', 'doctorSelectPanel'];
+        const selects = ['doctorSelectTurno', 'doctorLoginSelect'];
         selects.forEach(id => {
           const select = document.getElementById(id);
-          select.innerHTML = '<option value="">-- Seleccionar --</option>';
-          this.doctores.forEach(doc => {
-            select.innerHTML += `<option value="${doc.id}">${doc.nombre} (${doc.especialidad})</option>`;
-          });
+          if (select) {
+            select.innerHTML = '<option value="">-- Seleccionar Profesional --</option>';
+            this.doctores.forEach(doc => {
+              select.innerHTML += `<option value="${doc.id}">${doc.nombre} (${doc.especialidad})</option>`;
+            });
+          }
         });
       },
 
+      // LÓGICA DE TURNERO (DAR TURNO)
       async loadContadores() {
         const { data, error } = await supabase.from('contadores').select('*');
         if (!error && data) {
@@ -521,7 +770,6 @@
         }
       },
 
-      // VISTA: DAR TURNO
       onDoctorSelectTurno() {
         const doctorId = document.getElementById('doctorSelectTurno').value;
         const btn = document.getElementById('btnDarTurno');
@@ -536,85 +784,97 @@
 
         const ultimoTurno = this.contadores[doctorId] || 0;
         const nextTurno = ultimoTurno + 1;
-        
+
         nextNumEl.innerText = `#${nextTurno}`;
         preview.style.display = 'block';
         btn.disabled = false;
       },
 
+      clearTurnoForm() {
+        const inputs = [
+          'pacienteNameInput', 'pacienteCedula', 'pacienteEdad',
+          'pacientePeso', 'pacienteEstatura', 'pacienteSignos', 'pacienteContacto'
+        ];
+        inputs.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+      },
+
       async darTurno() {
         const doctorId = document.getElementById('doctorSelectTurno').value;
-        const pacienteName = document.getElementById('pacienteNameInput').value.trim();
+
+        // Recoger datos
+        const paciente = {
+          nombre: document.getElementById('pacienteNameInput').value.trim() || 'Sin Nombre',
+          cedula: document.getElementById('pacienteCedula').value.trim(),
+          edad: document.getElementById('pacienteEdad').value.trim(),
+          peso: document.getElementById('pacientePeso').value.trim(),
+          estatura: document.getElementById('pacienteEstatura').value.trim(),
+          signos: document.getElementById('pacienteSignos').value.trim(),
+          contacto: document.getElementById('pacienteContacto').value.trim(),
+        };
+
         const btn = document.getElementById('btnDarTurno');
-        
+
         if (!doctorId) return;
         btn.disabled = true;
         btn.innerText = 'Procesando...';
 
         try {
-          // Obtener el contador actual de la DB para evitar desincronizaciones
+          // Obtener contador actual
           const { data: countData, error: countErr } = await supabase
             .from('contadores')
             .select('ultimo_turno')
             .eq('doctor_id', doctorId)
             .single();
-            
+
           if (countErr) throw countErr;
 
           const nuevoTurnoNum = countData.ultimo_turno + 1;
 
-          // Actualizar contador primero
+          // Actualizar contador
           const { error: updateErr } = await supabase
             .from('contadores')
             .update({ ultimo_turno: nuevoTurnoNum })
             .eq('doctor_id', doctorId);
-            
+
           if (updateErr) throw updateErr;
 
-          // Insertar el nuevo turno
+          // Insertar turno con los nuevos campos
           const { error: insertErr } = await supabase
             .from('turnos')
             .insert({
               doctor_id: doctorId,
               numero_turno: nuevoTurnoNum,
-              paciente: pacienteName || 'Sin Nombre',
+              paciente: paciente.nombre,
+              cedula: paciente.cedula,
+              edad: paciente.edad ? parseInt(paciente.edad) : null,
+              peso: paciente.peso,
+              estatura: paciente.estatura,
+              signos_vitales: paciente.signos,
+              contacto: paciente.contacto,
               estado: 'pendiente',
               creado_por: this.userName
             });
 
           if (insertErr) throw insertErr;
 
-          this.showToast(`¡Turno #${nuevoTurnoNum} asignado exitosamente!`, 'success');
-          document.getElementById('pacienteNameInput').value = '';
-          
+          this.showToast(`¡Turno #${nuevoTurnoNum} creado con éxito!`, 'success');
+          this.clearTurnoForm();
+
         } catch (error) {
           console.error(error);
-          this.showToast('Error al asignar turno. Intenta de nuevo.', 'error');
+          this.showToast('Error al asignar turno. Revisa la conexión.', 'error');
         } finally {
-          btn.innerText = 'Dar Turno';
-          // El refresco de la UI se maneja por la suscripción Realtime
+          btn.innerText = 'Registrar Paciente y Dar Turno';
         }
       },
 
-      // VISTA: PANEL DEL DOCTOR
-      async onDoctorSelectPanel() {
-        const doctorId = document.getElementById('doctorSelectPanel').value;
-        const content = document.getElementById('doctorPanelContent');
-        
-        this.selectedDoctorIdPanel = doctorId;
-
-        if (!doctorId) {
-          content.style.display = 'none';
-          return;
-        }
-
-        content.style.display = 'block';
-        await this.loadTurnosPendientes(doctorId);
-      },
-
+      // LÓGICA DE DOCTOR (PANEL)
       async loadTurnosPendientes(doctorId) {
         const listEl = document.getElementById('patientList');
-        listEl.innerHTML = '<li class="patient-item">Cargando...</li>';
+        listEl.innerHTML = '<li class="patient-item" style="text-align:center;">Cargando lista de pacientes...</li>';
 
         const { data, error } = await supabase
           .from('turnos')
@@ -636,45 +896,73 @@
         const listEl = document.getElementById('patientList');
         const nextNumEl = document.getElementById('currentPatientNumber');
         const nextNameEl = document.getElementById('currentPatientName');
-        
+
         listEl.innerHTML = '';
 
         if (this.turnosPendientes.length === 0) {
-          listEl.innerHTML = '<li class="patient-item" style="justify-content:center; color:#666;">No hay pacientes en espera</li>';
+          listEl.innerHTML = '<li class="patient-item" style="align-items:center; color:#666;">No hay pacientes en espera.</li>';
           nextNumEl.innerText = '--';
-          nextNameEl.innerText = 'Libre';
+          nextNameEl.innerText = 'Libre - Sala de espera vacía';
           return;
         }
 
-        // Buscar el que está en consulta primero, si no hay, tomar el primer pendiente
         const enConsulta = this.turnosPendientes.find(t => t.estado === 'en_consulta');
         const proximo = enConsulta || this.turnosPendientes[0];
 
         nextNumEl.innerText = `Turno #${proximo.numero_turno}`;
         nextNameEl.innerText = proximo.paciente || 'Sin nombre';
-        
-        if(enConsulta) {
-           nextNameEl.innerHTML += ` <span style="font-size:0.8rem; background:white; color:var(--primary-color); padding:2px 6px; border-radius:10px; margin-left:10px;">EN CONSULTA</span>`;
+
+        if (enConsulta) {
+          nextNameEl.innerHTML += `<br><span style="display:inline-block; margin-top:10px; font-size:0.9rem; background:white; color:var(--primary-color); padding:4px 10px; border-radius:15px; font-weight:bold;">EN CONSULTA ACTUALMENTE</span>`;
         }
 
         this.turnosPendientes.forEach(turno => {
           const isEnConsulta = turno.estado === 'en_consulta';
-          
+
           let actionButtons = '';
           if (turno.estado === 'pendiente') {
-            actionButtons = `<button class="btn-action btn-call" onclick="app.updateTurnoEstado('${turno.id}', 'en_consulta')">Llamar</button>`;
+            actionButtons = `<button class="btn-action btn-call" onclick="app.updateTurnoEstado('${turno.id}', 'en_consulta')">Llamar Paciente</button>`;
           } else if (turno.estado === 'en_consulta') {
-            actionButtons = `<button class="btn-action btn-done" onclick="app.updateTurnoEstado('${turno.id}', 'atendido')">Atender / Finalizar</button>`;
+            actionButtons = `<button class="btn-action btn-done" onclick="app.updateTurnoEstado('${turno.id}', 'atendido')">Atender / Finalizar Consulta</button>`;
           }
 
           listEl.innerHTML += `
             <li class="patient-item ${isEnConsulta ? 'en-consulta' : ''}">
-              <div class="patient-info">
-                <strong>Turno #${turno.numero_turno}</strong>
-                <span>Paciente: ${turno.paciente || 'N/A'} | Creado por: ${turno.creado_por}</span>
+              <div class="patient-header">
+                <div>
+                  <div class="patient-title">Turno #${turno.numero_turno} - ${turno.paciente}</div>
+                  <div class="patient-subtitle">Ingresado por: ${turno.creado_por}</div>
+                </div>
+                <div class="patient-actions">
+                  ${actionButtons}
+                </div>
               </div>
-              <div class="patient-actions">
-                ${actionButtons}
+              
+              <div class="patient-data-grid">
+                <div class="data-item">
+                  <span>Cédula</span>
+                  <span>${turno.cedula || 'N/A'}</span>
+                </div>
+                <div class="data-item">
+                  <span>Edad</span>
+                  <span>${turno.edad ? turno.edad + ' años' : 'N/A'}</span>
+                </div>
+                <div class="data-item">
+                  <span>Peso</span>
+                  <span>${turno.peso || 'N/A'}</span>
+                </div>
+                <div class="data-item">
+                  <span>Estatura</span>
+                  <span>${turno.estatura || 'N/A'}</span>
+                </div>
+                <div class="data-item">
+                  <span>Contacto</span>
+                  <span>${turno.contacto || 'N/A'}</span>
+                </div>
+                <div class="data-item" style="grid-column: 1 / -1;">
+                  <span>Signos Vitales</span>
+                  <span>${turno.signos_vitales || 'No registrados'}</span>
+                </div>
               </div>
             </li>
           `;
@@ -689,8 +977,7 @@
             .eq('id', turnoId);
 
           if (error) throw error;
-          
-          // Nota: No recargamos aquí manualmente, Realtime lo hará
+
           if (nuevoEstado === 'en_consulta') this.showToast('Paciente llamado', 'success');
           if (nuevoEstado === 'atendido') this.showToast('Turno finalizado', 'success');
 
@@ -703,34 +990,30 @@
       // TIEMPO REAL
       setupRealtimeSubscriptions() {
         const channel = supabase.channel('schema-db-changes')
-          // Escuchar cambios en la tabla turnos
           .on('postgres_changes', { event: '*', schema: 'public', table: 'turnos' }, payload => {
             console.log('Cambio en turnos:', payload);
-            // Si soy un doctor y el cambio es de mi área, recargo la lista
-            if (this.selectedDoctorIdPanel) {
+            if (this.role === 'doctor' && this.selectedDoctorIdPanel) {
               const record = payload.new || payload.old;
               if (record && record.doctor_id === this.selectedDoctorIdPanel) {
                 this.loadTurnosPendientes(this.selectedDoctorIdPanel);
               }
             }
           })
-          // Escuchar cambios en la tabla contadores
           .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'contadores' }, payload => {
             console.log('Cambio en contadores:', payload);
             if (payload.new) {
               const { doctor_id, ultimo_turno } = payload.new;
               this.contadores[doctor_id] = ultimo_turno;
-              
-              // Actualizar UI si estoy en la vista de Dar Turno y tengo ese doctor seleccionado
-              const selectTurno = document.getElementById('doctorSelectTurno');
-              if (selectTurno && selectTurno.value === doctor_id) {
-                this.onDoctorSelectTurno(); 
+
+              if (this.role === 'turnero') {
+                const selectTurno = document.getElementById('doctorSelectTurno');
+                if (selectTurno && selectTurno.value === doctor_id) {
+                  this.onDoctorSelectTurno();
+                }
               }
             }
           })
-          .subscribe((status) => {
-             console.log("Realtime status:", status);
-          });
+          .subscribe();
       },
 
       showToast(message, type = 'success') {
@@ -739,7 +1022,7 @@
         toast.className = `toast ${type}`;
         toast.innerText = message;
         container.appendChild(toast);
-        
+
         setTimeout(() => {
           if (container.contains(toast)) {
             container.removeChild(toast);
@@ -748,11 +1031,17 @@
       }
     };
 
-    // Escuchar Enter en el modal
-    document.getElementById('userNameInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') app.login();
+    // Inicializar app al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      app.init();
+
+      // Permitir Enter en inputs
+      document.getElementById('userNameInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') app.loginTurnero();
+      });
     });
 
   </script>
 </body>
+
 </html>
